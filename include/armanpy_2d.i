@@ -121,7 +121,7 @@
     {
         typedef typename MatT::elem_type eT;
         npy_intp dims[2] = { npy_intp(m->n_rows), npy_intp(m->n_cols) };
-        PyObject* array = PyArray_EMPTY( ArmaTypeInfo< MatT >::numdim, dims, ArmaTypeInfo< MatT >::type, 1);
+        PyObject* array = PyArray_EMPTY( ArmaTypeInfo< MatT >::numdim, dims, ArmaTypeInfo< MatT >::type, true);
         if ( !array || !array_is_fortran( array ) ) {
             PyErr_SetString( PyExc_TypeError, "Creation of 2-dimensional return array failed" );
             return NULL;
@@ -137,13 +137,8 @@
     {
         typedef typename MatT::elem_type eT;
         npy_intp dims[2] = { 1, 1 };
-        
-          
-        PyArrayObject* ary = (PyArrayObject*)PyArray_EMPTY(2, dims, NumpyType<eT>::val, 1);
-        if ( !ary || !array_is_fortran(ary) ) {
-            PyErr_SetString( PyExc_TypeError, "Creation of 2-dimensional return array failed" );
-            return NULL; 
-        }
+        PyArrayObject* ary = (PyArrayObject*)PyArray_EMPTY(2, dims, NumpyType<eT>::val, true);
+        if ( !ary || !array_is_fortran(ary) ) { return NULL; }
 
         array_dimensions(ary)[0] = m->n_rows;
         array_dimensions(ary)[1] = m->n_cols;
@@ -310,8 +305,8 @@
     %typemap( in, fragment="armanpy_mat_typemaps" )
         ( ARMA_MAT_TYPE &)
     {
-        if( ! armanpy_basic_typecheck< ARMA_MAT_TYPE >( $input, true, true )            ) { PyErr_SetString( PyExc_RuntimeError, "Argument not a valid armadillo matrix" ); SWIG_fail; }
-        if( ! armanpy_numpy_as_mat_with_shared_memory< ARMA_MAT_TYPE >( $input, &($1) ) ) { PyErr_SetString( PyExc_RuntimeError, "Numpy array can not be wrapped as armadillo matrix" ); SWIG_fail; }
+        if( ! armanpy_basic_typecheck< ARMA_MAT_TYPE >( $input, true, true )            ) SWIG_fail;
+        if( ! armanpy_numpy_as_mat_with_shared_memory< ARMA_MAT_TYPE >( $input, &($1) ) ) SWIG_fail;
     }
 
     %typemap( argout, fragment="armanpy_mat_typemaps" )
@@ -353,11 +348,11 @@
 //////////////////////////////////////////////////////////////////////////
 
 %define %armanpy_mat_return_by_value_typemaps( ARMA_MAT_TYPE )
-    %typemap( out )
+    %typemap( out, fragment="armanpy_mat_typemaps" )
         ( ARMA_MAT_TYPE )
     {
       PyObject* array = armanpy_mat_copy_to_numpy< ARMA_MAT_TYPE >( &$1 );
-      if ( !array ) { PyErr_SetString( PyExc_RuntimeError, "Return by value failed (armanpy_mat_copy_to_numpy)." ); SWIG_fail; }
+      if ( !array ) SWIG_fail;
       $result = SWIG_Python_AppendOutput($result, array);
     }
 %enddef
@@ -383,12 +378,12 @@
 %armanpy_mat_return_by_value_typemaps( arma::cx_fmat )
 
 %define %armanpy_mat_return_by_reference_typemaps( ARMA_MAT_TYPE )
-    %typemap( out )
+    %typemap( out, fragment="armanpy_mat_typemaps" )
         ( const ARMA_MAT_TYPE & ),
         (       ARMA_MAT_TYPE & )
     {
       PyObject* array = armanpy_mat_copy_to_numpy< ARMA_MAT_TYPE >( $1 );
-      if ( !array )  { PyErr_SetString( PyExc_RuntimeError, "Return by reference failed (armanpy_mat_copy_to_numpy)." ); SWIG_fail; }
+      if ( !array ) SWIG_fail;
       $result = SWIG_Python_AppendOutput($result, array);
     }
 %enddef
@@ -413,6 +408,50 @@
 %armanpy_mat_return_by_reference_typemaps( arma::cx_mat )
 %armanpy_mat_return_by_reference_typemaps( arma::cx_fmat )
 
+
+//////////////////////////////////////////////////////////////////////////
+// Typemaps for return by pointer (Pyhon takes ownership of the data!)
+// You MUST ensure that the method/function that returns your matrix as a
+// pointer can give up the reference entirely!
+//////////////////////////////////////////////////////////////////////////
+
+%define %armanpy_mat_return_by_pointer_typemaps( ARMA_MAT_TYPE )
+    %typemap( out, fragment="armanpy_mat_typemaps" )
+        ( ARMA_MAT_TYPE* )
+    {
+        npy_intp dims[2] = { 2, 1 };
+        PyObject* array = PyArray_EMPTY(2, dims, ArmaTypeInfo< ARMA_MAT_TYPE >::type, true);
+        if ( !array || !array_is_fortran( array ) ) {
+            PyErr_SetString( PyExc_TypeError, "Creation of 2-dimensional return array failed" );
+            return NULL;
+        }
+        armanpy_mat_as_numpy_with_shared_memory($1, array);
+        $result = SWIG_Python_AppendOutput($result, array);
+    }
+%enddef
+
+%armanpy_mat_return_by_pointer_typemaps( arma::Mat< double > )
+%armanpy_mat_return_by_pointer_typemaps( arma::Mat< float >  )
+%armanpy_mat_return_by_pointer_typemaps( arma::Mat< int > )
+%armanpy_mat_return_by_pointer_typemaps( arma::Mat< unsigned >  )
+%armanpy_mat_return_by_pointer_typemaps( arma::Mat< arma::sword >  )
+%armanpy_mat_return_by_pointer_typemaps( arma::Mat< arma::uword >  )
+%armanpy_mat_return_by_pointer_typemaps( arma::Mat< arma::cx_double >  )
+%armanpy_mat_return_by_pointer_typemaps( arma::Mat< arma::cx_float >  )
+%armanpy_mat_return_by_pointer_typemaps( arma::Mat< std::complex< double > >  )
+%armanpy_mat_return_by_pointer_typemaps( arma::Mat< std::complex< float > >  )
+%armanpy_mat_return_by_pointer_typemaps( arma::mat )
+%armanpy_mat_return_by_pointer_typemaps( arma::fmat )
+%armanpy_mat_return_by_pointer_typemaps( arma::imat )
+%armanpy_mat_return_by_pointer_typemaps( arma::umat )
+%armanpy_mat_return_by_pointer_typemaps( arma::uchar_mat )
+%armanpy_mat_return_by_pointer_typemaps( arma::u32_mat )
+%armanpy_mat_return_by_pointer_typemaps( arma::s32_mat )
+%armanpy_mat_return_by_pointer_typemaps( arma::cx_mat )
+%armanpy_mat_return_by_pointer_typemaps( arma::cx_fmat )
+
+
+
 //////////////////////////////////////////////////////////////////////////
 // Typemaps for return by boost::shared_ptr< ... > functions/methods
 //////////////////////////////////////////////////////////////////////////
@@ -424,7 +463,7 @@
         ( boost::shared_ptr< ARMA_MAT_TYPE > )
     {
       PyObject* array = armanpy_mat_bsptr_as_numpy_with_shared_memory< ARMA_MAT_TYPE >( $1 );
-      if ( !array ) { PyErr_SetString( PyExc_RuntimeError, "Return boost::shared_ptr< ARMA_MAT_TYPE > failed (armanpy_mat_bsptr_as_numpy_with_shared_memory)." ); SWIG_fail; }
+      if ( !array ) { SWIG_fail; }
       $result = SWIG_Python_AppendOutput($result, array);
     }
 %enddef

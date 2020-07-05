@@ -72,13 +72,7 @@ public:
             }
         }
     };
-    
-    arma::mat mult( arma::mat& A, arma::mat& B )
-    {
-        return A * B;
-    };
 
-    
 private:
     arma::mat m;
 };

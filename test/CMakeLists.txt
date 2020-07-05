@@ -12,6 +12,7 @@
 # build the armanpy_test_lib library
 add_library( armanpy_test_lib SHARED armanpy_test_lib.cpp armanpy_test_lib.hpp )
 target_link_libraries( armanpy_test_lib ${ARMADILLO_LIBRARIES} )
+#add_library( armanpy_test_lib SHARED armanpy_test_lib.cpp armanpy_test_lib.hpp )
 
 ##
 ## Set up the swig wrapper
@@ -24,12 +25,8 @@ SET( CMAKE_SWIG_OUTDIR "${PROJECT_BINARY_DIR}/bin" )
 set_source_files_properties( armanpy_test_lib.i PROPERTIES CPLUSPLUS ON)
 set_source_files_properties( armanpy_test_lib.i PROPERTIES SWIG_FLAGS "-ignoremissing;-w509" )
 
-
 swig_add_module    ( armanpytest python armanpy_test_lib.i )
-swig_link_libraries( armanpytest armanpy_test_lib ${PYTHON_LIBRARIES} ${ARMADILLO_LIBRARIES} )
-
-set_source_files_properties( ${swig_generated_file_fullname} PROPERTIES COMPILE_FLAGS -fpermissive)
-set_source_files_properties( ${swig_generated_file_fullname} PROPERTIES CXX_COMPILE_FLAGS -fpermissive)
+swig_link_libraries( armanpytest armanpy_test_lib ${PYTHON_LIBRARIES} )
 
 configure_file( armanpy_test_run.py "${CMAKE_SWIG_OUTDIR}/armanpy_test_run.py" COPYONLY )
 

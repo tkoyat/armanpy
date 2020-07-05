@@ -42,7 +42,7 @@ class MatUnitTests:
         a = self.init_m( 6, 7 )
         self.c.set_m( a )
         m=self.c.get_m_sptr()
-        # print "test_get_sptr", type(m), m
+        # print("test_get_sptr", type(m), m)
         self.assertTrue( N.all( a == m ) )
         m1 = m
         del m
@@ -83,7 +83,7 @@ class MatUnitTests:
     def test_mod_small_size(self):
         m = self.init_m( 5, 4 )
         self.c.mod_size( m, 3, 4 )
-        a = [ [ 00, 01, 02, 03 ], [ 10, 11, 12, 13  ], [ 20, 21, 22, 23 ] ];
+        a = [ [ 0, 1, 2, 3 ], [ 10, 11, 12, 13  ], [ 20, 21, 22, 23 ] ];
         self.assertTrue( N.all( a == m ) )
 
     def test_mode_large_size(self):
@@ -162,8 +162,8 @@ class RowColUnitTests:
         self.c.set( a )
         m=self.c.get_m_sptr()
         if not N.all( a == m ):
-            print "a", type(a), a
-            print "m", type(m), m
+            print("a", type(a), a)
+            print("m", type(m), m)
         self.assertTrue( N.all( a == m ) )
 
     def test_rnd(self):
@@ -186,7 +186,7 @@ class RowColUnitTests:
     def test_mod_small_size(self):
         m = self.init_m( 5 )
         self.c.mod_size( m, 4 )
-        a = [ [ 00, 01, 02, 03 ] ];
+        a = [ [ 0, 1, 2, 3 ] ];
         self.assertTrue( N.all( a == m ) )
 
     def test_mode_large_size(self):

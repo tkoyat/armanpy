@@ -23,18 +23,16 @@ def example_usage():
     
     # return values with and without boost:shared_ptr
     m1 = ex.get()
-    print m1
+    print(m1)
         
     m2 = ex.get_sptr()
-    print N.all( N.all( m1 == m2 ) )
+    print(N.all( N.all( m1 == m2 ) ))
 
     # Input arguments must have FORTRAN odering: i.e. order="F"
     ex.set( N.array( [ [1.,2.,3.], [4.,5.,0.6] ], order="F" ) )
-    print ex.get()
+    print(ex.get())
     
-    a = N.array( [ [1.,2.], [4.,5.] ], order="F" )
-    b = N.array( [ [10.,20.], [40.,50.] ], order="F" )
-    print ex.mult( a, b )
+
     
     # The following would cause an exception
     # ex.set_m( N.array( [ [1.,2.,3.], [4.,5.,.6] ], order="C" ) )
@@ -43,7 +41,7 @@ def example_usage():
     # In the following the size and content of a matrix is modified
     m = N.array( [ [1.,2.,3.], [4.,5.,0.6] ], order="F" )
     ex.modify( m, 9, 9 )
-    print m
+    print(m)
     
     # Note that after the matrix was modifed by this function it does not
     # own its memory. So one can e.g. not resize it
@@ -51,7 +49,7 @@ def example_usage():
     # But it is easy to copy it and work with it
     m = N.array( m )
     m.resize(81,1)
-    print m.shape
+    print(m.shape)
     
     
 if __name__ == '__main__':

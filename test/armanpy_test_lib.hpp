@@ -81,7 +81,7 @@ public:
         A.fill(25);
         A(0,0,0)=0;
     };
-    
+
     void mod_size( MatT& A, unsigned r, unsigned c, unsigned s ) {
         A.resize( r, c, s );
         A.randn( r, c, s );
@@ -141,12 +141,6 @@ public:
         A(0,0)=00;
     };
 
-    MatT mult( MatT& A, MatT& B )
-    {
-        MatT C = A*B;
-        return C;
-    }
-    
     void mod_size( MatT& A, unsigned r, unsigned c ) {
         A.resize( r, c );
         A.randn( r, c );
@@ -205,11 +199,6 @@ public:
         A(0,0)=00;
     };
 
-    MatT mult( MatT& A, MatT& B )
-    {
-        return A*B;
-    }
-    
     void mod_size( MatT& A, unsigned r, unsigned c )
     {
         typedef typename MatT::pod_type rT;
@@ -263,7 +252,7 @@ public:
         A.fill(25);
         A(0,0)=00;
     };
-    
+
     void mod_size( MatT& A, unsigned p ) {
         A.resize( p );
         A.randn( p );

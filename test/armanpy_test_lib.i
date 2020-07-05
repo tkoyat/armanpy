@@ -25,10 +25,12 @@
 
 /* Some minimal excpetion handling */
 %exception {
-    try { 
+    try {
         $action
-    } 
-    catch( std::exception & e  ) { PyErr_SetString( PyExc_RuntimeError, e.what() ); SWIG_fail; }             
+    } catch( char * str ) {
+        PyErr_SetString( PyExc_IndexError, str );
+        SWIG_fail;
+    }
 }
 
 /* Parse the header file to generate wrappers */

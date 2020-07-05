@@ -24,7 +24,7 @@ usage (note that armanpy_test_run.py is just unit tests).
 How to compile and run the example and the tests?
 -------------------------------------------------
 
-1) Use CMake to generate your build system based on the provided CMakeLists.txt file
+1) Use CMake to generate your build system based on the provided CMakeLists.txt file in the example or test dir.
 2) Build the resulting project.
 3) Run the Python script example.py or armanpy_tests.py
 
@@ -33,17 +33,7 @@ From the command line this can be done as follows for the example dir (adapt to 
 cd /path/to/armanpy
 mkdir build
 cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release -DARMADILLO_INCLUDE_DIR=/path/to/armadillo/include -DARMADILLO_LIBRARIES=/path/to/armadillo/library
-
-# e.g. under Linux: 
-# cmake .. -DCMAKE_BUILD_TYPE=Release -DARMADILLO_INCLUDE_DIR=/usr/include -DARMADILLO_LIBRARIES=/usr/lib64/libarmadillo.so
-
-# e.g. under Windows: 
-# cmake ../git -DCMAKE_BUILD_TYPE=Release -G "Visual Studio 12 2013 Win64"  -DARMADILLO_INCLUDE_DIR=C:\Users\natschlaeger\Programs\armadillo-6.200.2\include -DARMADILLO_LIBRARIES=C:/Users/natschlaeger/Programs/OpenBLAS-v0.2.15-Win64-int32/lib/libopenblas.lib
-
-
-cmake ../git -DCMAKE_BUILD_TYPE=Release -G "Visual Studio 12 2013 Win64"  -DARMADILLO_INCLUDE_DIR=C:\Users\natschlaeger\Programs\armadillo-6.200.2\include -DARMADILLO_LIBRARIES=C:/Users/natschlaeger/Programs/OpenBLAS-v0.2.15-Win64-int32/lib/libopenblas.dll.a
-
+cmake .. -DCMAKE_BUILD_TYPE=Release -DARMADILLO_INCLUDE_DIR=/path/to/your/armadillo/include
 cmake --build . --config Release
 
 The above commands will generate all necessary files in build/bin.

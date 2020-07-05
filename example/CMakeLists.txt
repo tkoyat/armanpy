@@ -25,7 +25,7 @@ set_source_files_properties( example.i PROPERTIES CPLUSPLUS ON)
 set_source_files_properties( example.i PROPERTIES SWIG_FLAGS "-ignoremissing;-w509" )
 
 swig_add_module    ( armanpyexample python example.i )
-swig_link_libraries( armanpyexample examplelib ${PYTHON_LIBRARIES} ${ARMADILLO_LIBRARIES} )
+swig_link_libraries( armanpyexample examplelib ${PYTHON_LIBRARIES} )
 
 configure_file( example.py "${CMAKE_SWIG_OUTDIR}/example.py" COPYONLY )
 

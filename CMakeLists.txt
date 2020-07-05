@@ -17,41 +17,28 @@ project( armanpy )
 
 set( ARMANPY_VERSION_MAJOR 0 )
 set( ARMANPY_VERSION_MINOR 1 )
-set( ARMANPY_VERSION_PATCH 4 )
+set( ARMANPY_VERSION_PATCH 3 )
 
 ### Armadillo
 
 if( NOT ARMADILLO_INCLUDE_DIR )
     message( FATAL_ERROR "You must specify the include_directory of your armadillo installation via -DARMADILLO_INCLUDE_DIR=/path/to/armadillio/include" )
 endif()
-if( NOT ARMADILLO_LIBRARIES )
-    message( FATAL_ERROR "You must specify the libraries of your armadillo installation via -DARMADILLO_LIBRARIES; E.g. -DARMADILLO_LIBRARIES=/usr/lib64/libarmadillo.so" )
-endif()
 
 message( STATUS "Armadillo" )
 message( STATUS "    IncDirs: ${ARMADILLO_INCLUDE_DIR}" )
-message( STATUS "  Libraries: ${ARMADILLO_LIBRARIES}" )
-
 
 ### Swig
 find_package(SWIG REQUIRED)
 include( ${SWIG_USE_FILE} )
 message( STATUS "SWIG ${SWIG_VERSION}" )
 message( STATUS "  Executable: ${SWIG_EXECUTABLE}" )
-message( STATUS "  SWIG_USE_FILE: ${SWIG_USE_FILE}" )
 
 ### Python
-# set( PythonLibs_FIND_VERSION 2.7 )
-find_package( PythonLibs 2.7 REQUIRED )
-find_package( PythonInterp 2.7 REQUIRED )
-
-#set( PYTHON_INCLUDE_DIRS /usr/include/python )
-#set( PYTHON_INCLUDE_DIRS /usr/lib64/libpython2.7.so )
-
+find_package( PythonLibs REQUIRED )
+find_package( PythonInterp REQUIRED )
 message( STATUS "Python ${PYTHON_VERSION_STRING}" )
 message( STATUS "  Executable: ${PYTHON_EXECUTABLE}" )
-message( STATUS "     Include: ${PYTHON_INCLUDE_DIRS}" )
-message( STATUS "   Libraries: ${PYTHON_LIBRARIES}" )
 
 ### Boost
 find_package( Boost 1.42.0 REQUIRED )
@@ -62,7 +49,7 @@ message( STATUS "    IncDirs: ${Boost_INCLUDE_DIRS}" )
 ### NumPy
 if( NOT NUMPY_INCLUDE_DIRS ) 
 
-    execute_process(COMMAND ${PYTHON_EXECUTABLE} -c "import numpy; print numpy.get_include();"
+    execute_process(COMMAND ${PYTHON_EXECUTABLE} -c "import numpy; print(numpy.get_include());"
                       RESULT_VARIABLE NUMPY_RESULT
                       OUTPUT_VARIABLE NUMPY_OUTPUT
                       ERROR_VARIABLE NUMPY_ERRUR
@@ -74,7 +61,7 @@ if( NOT NUMPY_INCLUDE_DIRS )
         string(STRIP ${NUMPY_OUTPUT} NUMPY_INCLUDE_DIRS)
         set( NUMPY_INCLUDE_DIRS ${NUMPY_INCLUDE_DIRS} CACHE PATH "Include path for numpy headers" )
         
-        execute_process(COMMAND ${PYTHON_EXECUTABLE} -c "import numpy; print numpy.version.full_version;"
+        execute_process(COMMAND ${PYTHON_EXECUTABLE} -c "import numpy; print(numpy.version.full_version);"
                       RESULT_VARIABLE NUMPY_RESULT
                       OUTPUT_VARIABLE NUMPY_OUTPUT
                       ERROR_VARIABLE NUMPY_ERRUR
@@ -128,18 +115,16 @@ add_subdirectory( example )
 install( DIRECTORY  "${CMAKE_CURRENT_SOURCE_DIR}/include/"  DESTINATION include )
 install( DIRECTORY  "${CMAKE_CURRENT_SOURCE_DIR}/test/"     DESTINATION test PATTERN "build" EXCLUDE )
 install( DIRECTORY  "${CMAKE_CURRENT_SOURCE_DIR}/example/"  DESTINATION example PATTERN "build" EXCLUDE )
-install( FILES README LICENSE CHANGELOG CMakeLists.txt DESTINATION . )
+install( FILES README LICENSE CHANGELOG DESTINATION . )
 
 #build a CPack driven installer package
 
-SET( CPACK_GENERATOR ZIP )
-SET( CPACK_SOURCE_GENERATOR ZIP )
-SET( CPACK_PACKAGE_DESCRIPTION_SUMMARY "ArmaNpy")
-SET( CPACK_PACKAGE_VENDOR "Thomas Natschläger")
-set( CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
-set( CPACK_PACKAGE_VERSION_MAJOR "${ARMANPY_VERSION_MAJOR}")
-set( CPACK_PACKAGE_VERSION_MINOR "${ARMANPY_VERSION_MINOR}")
-set( CPACK_PACKAGE_VERSION_PATCH "${ARMANPY_VERSION_PATCH}")
+SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "ArmaNpy")
+SET(CPACK_PACKAGE_VENDOR "Thomas Natschläger")
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
+set(CPACK_PACKAGE_VERSION_MAJOR "${ARMANPY_VERSION_MAJOR}")
+set(CPACK_PACKAGE_VERSION_MINOR "${ARMANPY_VERSION_MINOR}")
+set(CPACK_PACKAGE_VERSION_PATCH "${ARMANPY_VERSION_PATCH}")
 set( CPACK_PACKAGE_FILE_NAME "${PROJECT_NAME}-${ARMANPY_VERSION_MAJOR}.${ARMANPY_VERSION_MINOR}.${ARMANPY_VERSION_PATCH}" )
 set( CPACK_TOPLEVEL_TAG      "${PROJECT_NAME}-${ARMANPY_VERSION_MAJOR}.${ARMANPY_VERSION_MINOR}.${ARMANPY_VERSION_PATCH}" )
 include (CPack)
