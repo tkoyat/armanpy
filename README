@@ -23,6 +23,18 @@ usage (note that armanpy_test_run.py is just unit tests).
 
 How to compile and run the example and the tests?
 -------------------------------------------------
+Windows Python3.7.5 x86_64 Mingw64
+
+    build armadillo:
+
+        cmake -Wno-dev -G “MinGW Makefiles” ..
+        mingw32-make -j4
+        mingw32-make install
+
+    build armanpy:
+        cmake .. -Wno-dev -G “MinGW Makefiles” -D CMAKE_CXX_FLAGS="-DMS_WIN64 -w" -DCMAKE_BUILD_TYPE=Release -DARMADILLO_INCLUDE_DIR=/usr/include -DARMADILLO_LIBRARIES=/usr/lib/libarmadillo.dll.a -DBOOST_ROOT=/boost -DBoost_INCLUDE_DIRS=/boost/include/boost-1_73 -DBoost_LIBRARY_DIR=/boost/lib
+
+-------------------------------------------------
 
 1) Use CMake to generate your build system based on the provided CMakeLists.txt file in the example or test dir.
 2) Build the resulting project.
@@ -64,7 +76,7 @@ https://bitbucket.org/mforbes/swig_cpp_python/src/cd7cef820273?at=default.
 Copyright
 ---------
 
-Copyright (C) 2012-2014 Thomas Natschl�ger (thomas.natschlaeger@gmail.com)
+Copyright (C) 2012-2014 Thomas Natschl�ger (thomas.natschlaeger@gmail.com)
 
 License
 -------
