@@ -31,6 +31,10 @@ Windows Python3.7.5 x86_64 Mingw64
         mingw32-make -j4
         mingw32-make install
 
+    build boost:
+        bootstrap.bat gcc
+        b2.exe install --prefix=E:\boost --build-type=complete toolset=gcc threading=multi
+
     build armanpy:
         cmake .. -Wno-dev -G “MinGW Makefiles” -D CMAKE_CXX_FLAGS="-DMS_WIN64 -w" -DCMAKE_BUILD_TYPE=Release -DARMADILLO_INCLUDE_DIR=/usr/include -DARMADILLO_LIBRARIES=/usr/lib/libarmadillo.dll.a -DBOOST_ROOT=/boost -DBoost_INCLUDE_DIRS=/boost/include/boost-1_73 -DBoost_LIBRARY_DIR=/boost/lib
 
